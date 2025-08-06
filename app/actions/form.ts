@@ -1,6 +1,6 @@
 'use server';
 
-import { currentUser } from '@clerk/nextjs';
+import { auth } from '@/auth';
 import prisma from '@/lib/prisma';
 import { FormSchema, formSchema } from '@/schemas/form';
 import { FormElementInstance } from '../(dashboard)/_components/FormElements';
@@ -8,15 +8,15 @@ import { FormElementInstance } from '../(dashboard)/_components/FormElements';
 class UserNotFoundErr extends Error {}
 
 export async function GetFormStats() {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
   const stats = await prisma.form.aggregate({
     where: {
-      userId: user.id,
+      userId: session.user.id,
     },
     _sum: {
       visits: true,
@@ -44,14 +44,14 @@ export async function GetFormStats() {
 }
 
 export async function CreateForm(data: FormSchema) {
-  const user = await currentUser();
+  const session = await auth();
   const validation = formSchema.safeParse(data);
 
   if (!validation.success) {
     throw new Error('Invalid form data');
   }
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
@@ -59,7 +59,7 @@ export async function CreateForm(data: FormSchema) {
 
   const form = await prisma.form.create({
     data: {
-      userId: user.id,
+      userId: session.user.id,
       name,
       description,
     },
@@ -73,15 +73,15 @@ export async function CreateForm(data: FormSchema) {
 }
 
 export async function GetForm() {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
   const form = await prisma.form.findMany({
     where: {
-      userId: user.id,
+      userId: session.user.id,
     },
     orderBy: {
       createdAt: 'desc',
@@ -92,15 +92,15 @@ export async function GetForm() {
 }
 
 export async function GetFormById(id: number) {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
   const form = await prisma.form.findUnique({
     where: {
-      userId: user.id,
+      userId: session.user.id,
       id,
     },
   });
@@ -109,15 +109,15 @@ export async function GetFormById(id: number) {
 }
 
 export async function UpdateFormContent(id: number, jsonContent: string) {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
   return await prisma.form.update({
     where: {
-      userId: user.id,
+      userId: session.user.id,
       id,
     },
     data: {
@@ -127,9 +127,9 @@ export async function UpdateFormContent(id: number, jsonContent: string) {
 }
 
 export async function PublishForm(id: number) {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
@@ -138,7 +138,7 @@ export async function PublishForm(id: number) {
       published: true,
     },
     where: {
-      userId: user.id,
+      userId: session.user.id,
       id,
     },
   });
@@ -180,15 +180,15 @@ export async function SubmitForm(formUrl: string, content: string) {
 }
 
 export async function GetFormSubmissions(id: number) {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
   return await prisma.form.findUnique({
     where: {
-      userId: user.id,
+      userId: session.user.id,
       id,
     },
     include: {
@@ -198,30 +198,30 @@ export async function GetFormSubmissions(id: number) {
 }
 
 export async function DeleteForm(id: number) {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
   return await prisma.form.delete({
     where: {
-      userId: user.id,
+      userId: session.user.id,
       id,
     },
   });
 }
 
 export async function deleteElementInstance(id: number, elementId: string) {
-  const user = await currentUser();
+  const session = await auth();
 
-  if (!user) {
+  if (!session?.user?.id) {
     throw new UserNotFoundErr();
   }
 
   const getContent = await prisma.form.findUnique({
     where: {
-      userId: user.id,
+      userId: session.user.id,
       id,
     },
     select: {
@@ -239,7 +239,7 @@ export async function deleteElementInstance(id: number, elementId: string) {
 
   return await prisma.form.update({
     where: {
-      userId: user.id,
+      userId: session.user.id,
       id,
     },
     data: {

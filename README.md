@@ -10,7 +10,7 @@ This project is a simple and powerful form builder with drag & drop features. Yo
 - Dashboard to manage your forms
 - Form Submission
 - Collect Form Data
-- Authentication with Google and Github
+- Authentication with Google and GitHub
 
 ## Screenshots
 
@@ -34,9 +34,9 @@ This project is a simple and powerful form builder with drag & drop features. Yo
 - Shadcn/ui - UI Components
 - Beautiful DnD - Drag & Drop Library
 - Prisma - ORM
-- PostgreSQL - Database from Vercel
+- SQLite - Database
 - Zustand - State Management
-- Clerk - Authentication Service
+- NextAuth.js - Authentication Service
 
 ## Getting Started
 
@@ -55,20 +55,33 @@ npm run start # run production server
 setup .env file and add your own credentials example:
 
 ```bash
-DATABASE_URL=""
-POSTGRES_URL=""
-POSTGRES_PRISMA_URL=""
-POSTGRES_URL_NON_POOLING=""
-POSTGRES_USER=""
-POSTGRES_HOST=""
-POSTGRES_PASSWORD=""
-POSTGRES_DATABASE=""
+# Database
+DATABASE_URL="file:./dev.db"
 
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=""
-CLERK_SECRET_KEY=""
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-key-here"
 
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/dashboard"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/dashboard"
+# Google OAuth
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# GitHub OAuth
+GITHUB_ID="your-github-client-id"
+GITHUB_SECRET="your-github-client-secret"
+```
+
+## Database Setup
+
+After setting up your environment variables, run the following commands to set up your database:
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate dev --name init
+
+# (Optional) Open Prisma Studio to view your data
+npx prisma studio
 ```

@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button';
 import { soria } from '@/lib/fonts';
 import { hero } from '@/lib/site-config';
 import { cn } from '@/lib/utils';
-import { useUser } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { ChevronRight, Github } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import reactStringReplace from 'react-string-replace';
 
 export default function Hero() {
-  const { isSignedIn } = useUser();
+  const { data: session } = useSession();
 
   return (
     <section className="py-10">
@@ -35,7 +35,7 @@ export default function Hero() {
           Create your own forms and surveys with our easy to use drag and drop form builder.
         </h2>
         <div className='flex items-center gap-2'>
-          {isSignedIn ? (
+          {session?.user ? (
             <Button asChild>
               <Link href={'/dashboard'} className='text-zinc-50'>
                 Dashboard
@@ -43,7 +43,7 @@ export default function Hero() {
             </Button>
           ) : (
             <Button asChild>
-              <Link href={'/dashboard'} className='text-zinc-50'>
+              <Link href={'/sign-in'} className='text-zinc-50'>
                 Get Started
               </Link>
             </Button>
