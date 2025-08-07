@@ -1,7 +1,7 @@
 'use client';
 
 import PreviewDialogBtn from '@/app/(dashboard)/_components/PreviewDialogBtn';
-import SaveFormBtn from '@/app/(dashboard)/_components/SaveFormBtn';
+import AutoSaveFormBtn from '@/app/(dashboard)/_components/AutoSaveFormBtn';
 import { Form } from '@prisma/client';
 import React, { useEffect } from 'react';
 import PublishFormBtn from './PublishFormBtn';
@@ -114,7 +114,7 @@ export default function FormBuilder({ form }: { form: Form }) {
             <PreviewDialogBtn />
             {!form.published && (
               <>
-                <SaveFormBtn id={form.id} />
+                <AutoSaveFormBtn id={form.id} />
                 <PublishFormBtn id={form.id} />
               </>
             )}

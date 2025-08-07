@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useDesginerStore } from '@/store/store';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-import { Trash } from 'lucide-react';
+import { Loader2, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { FormElementInstance, FormElements } from './FormElements';
 import { toast } from '@/components/ui/use-toast';
@@ -19,6 +19,7 @@ export default
   }) {
   const router = useRouter()
   const [mouseOver, setMouseOver] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const DesignerElement = FormElements[element.type].designerComponent;
   const { removeElement, setSelectedElement } =
     useDesginerStore();
@@ -50,22 +51,32 @@ export default
     },
   });
 
-  async function removeElementFromDatabase() {
+  async function handleDeleteElement() {
+    if (isDeleting) return; // Prevent multiple clicks
+    
+    setIsDeleting(true);
+    
     try {
-      await deleteElementInstance(formId, element.id)
-
+      // First, delete from database
+      await deleteElementInstance(formId, element.id);
+      
+      // Only remove from local state if database operation succeeded
+      removeElement(element.id);
+      
       toast({
         title: "Success",
-        description: "Element deleted from database",
-      })
-
-      router.refresh()
+        description: "Element deleted successfully",
+      });
 
     } catch (error) {
+      console.error('Delete element error:', error);
       toast({
         title: "Error",
-        description: "Something went wrong, please try again later",
-      })
+        description: "Failed to delete element. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -97,12 +108,16 @@ export default
                 className="flex h-full justify-center rounded-md rounded-l-none border bg-red-500"
                 size={'icon'}
                 variant={'outline'}
+                disabled={isDeleting}
                 onClick={(e) => {
                   e.stopPropagation();
-                  removeElement(element.id);
-                  removeElementFromDatabase()
+                  handleDeleteElement();
                 }}>
-                <Trash className="h-6 w-6" />
+                {isDeleting ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  <Trash className="h-6 w-6" />
+                )}
               </Button>
             </div>
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse">
