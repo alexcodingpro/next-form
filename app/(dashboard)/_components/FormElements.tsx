@@ -4,6 +4,7 @@ import { NumberFieldFormElement } from '@/components/fields/NumberField';
 import { ParagraphFieldFormElement } from '@/components/fields/ParagraphField';
 import { SelectFieldFormElement } from '@/components/fields/SelectField';
 import { SeparatorFieldFormElement } from '@/components/fields/SeperatorField';
+import { SignatureFieldFormElement } from '@/components/fields/SignatureField';
 import { SpacerFieldFormElement } from '@/components/fields/SpacerField';
 import { SubTitleFieldFormElement } from '@/components/fields/SubTitleField';
 import { TextFieldFormElement } from '@/components/fields/TextField';
@@ -16,6 +17,7 @@ export type ElementsType =
   | 'SubTitleField'
   | 'ParagraphField'
   | 'SeperatorField'
+  | 'SignatureField'
   | 'SpacerField'
   | 'NumberField'
   | 'TextAreaField'
@@ -67,6 +69,7 @@ export const FormElements: FormElementsType = {
   SubTitleField: SubTitleFieldFormElement,
   ParagraphField: ParagraphFieldFormElement,
   SeperatorField: SeparatorFieldFormElement,
+  SignatureField: SignatureFieldFormElement,
   SpacerField: SpacerFieldFormElement,
   NumberField: NumberFieldFormElement,
   TextAreaField: TextAreaFieldFormElement,

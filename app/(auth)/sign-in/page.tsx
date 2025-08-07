@@ -119,7 +119,7 @@ export default function SignInPage() {
           </Button>
           
           <div className="text-center text-sm">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Button variant="link" className="p-0" asChild>
               <a href="/sign-up">Sign up</a>
             </Button>

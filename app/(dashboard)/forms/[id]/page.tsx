@@ -128,6 +128,7 @@ async function SubMissionTable({ id }: { id: number }) {
       case "DateField":
       case "SelectField":
       case "CheckboxField":
+      case "SignatureField":
         columns.push({
           id: element.id,
           label: element.extraAttributes?.label,
@@ -206,6 +207,22 @@ function RowCell({ type, value }: { type: ElementsType, value: string }) {
     case "CheckboxField":
       const checked = value === 'true';
       node = <Checkbox checked={checked} disabled />
+      break;
+    case "SignatureField":
+      if (!value) {
+        node = <Badge variant={'outline'}>No signature</Badge>
+        break;
+      }
+      node = (
+        <div className="flex items-center justify-center">
+          <img 
+            src={value} 
+            alt="Signature" 
+            className="max-w-[200px] max-h-[100px] border border-muted rounded"
+            style={{ objectFit: 'contain' }}
+          />
+        </div>
+      )
       break;
   }
 
