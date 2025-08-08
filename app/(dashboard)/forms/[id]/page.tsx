@@ -15,6 +15,8 @@ import { ElementsType, FormElementInstance } from '../../_components/FormElement
 import FormLinkShare from '../../_components/FormLinkShare';
 import VisitBtn from '../../_components/VisitBtn';
 import { headers } from 'next/headers';
+import PDFDownloadButton from './components/PDFDownloadButton';
+import PDFPreview from './components/PDFPreview';
 
 export default async function FormDetailsPage({
   params,
@@ -168,6 +170,9 @@ async function SubMissionTable({ id }: { id: number }) {
             <TableHead className='text-right uppercase text-muted-foreground'>
               Submitted at
             </TableHead>
+            <TableHead className='text-center uppercase text-muted-foreground'>
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -186,6 +191,20 @@ async function SubMissionTable({ id }: { id: number }) {
                     addSuffix: true
                   })
                 }
+              </TableCell>
+              <TableCell className='text-center'>
+                <div className="flex items-center justify-center gap-1">
+                  <PDFDownloadButton
+                    formName={form.name}
+                    formElements={formElements}
+                    submissionData={row}
+                  />
+                  <PDFPreview
+                    formName={form.name}
+                    formElements={formElements}
+                    submissionData={row}
+                  />
+                </div>
               </TableCell>
             </TableRow>
           ))}
