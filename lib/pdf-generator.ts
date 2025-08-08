@@ -80,6 +80,7 @@ export function generatePDF(
       case "SelectField":
       case "CheckboxField":
       case "SignatureField":
+      case "TextParagraphField":
         const fieldLabel = element.extraAttributes?.label || 'Untitled Field';
         const fieldValue = submissionData[element.id] || '';
         const isRequired = element.extraAttributes?.required;
@@ -149,6 +150,24 @@ export function generatePDF(
               }
             } else {
               displayValue = '(No signature provided)';
+            }
+            break;
+            
+          case "TextParagraphField":
+            try {
+              const variables = JSON.parse(fieldValue);
+              const paragraph = element.extraAttributes?.paragraph || '';
+              
+              // Replace variables in the paragraph
+              let filledParagraph = paragraph;
+              Object.entries(variables).forEach(([key, value]) => {
+                const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+                filledParagraph = filledParagraph.replace(regex, value as string || `{{${key}}}`);
+              });
+              
+              displayValue = filledParagraph;
+            } catch {
+              displayValue = '(Invalid paragraph data)';
             }
             break;
             

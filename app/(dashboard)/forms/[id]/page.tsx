@@ -131,6 +131,7 @@ async function SubMissionTable({ id }: { id: number }) {
       case "SelectField":
       case "CheckboxField":
       case "SignatureField":
+      case "TextParagraphField":
         columns.push({
           id: element.id,
           label: element.extraAttributes?.label,
@@ -242,6 +243,36 @@ function RowCell({ type, value }: { type: ElementsType, value: string }) {
           />
         </div>
       )
+      break;
+    case "TextParagraphField":
+      if (!value) {
+        node = <Badge variant={'outline'}>No response</Badge>
+        break;
+      }
+      try {
+        const variables = JSON.parse(value);
+        const variableEntries = Object.entries(variables);
+        if (variableEntries.length === 0) {
+          node = <Badge variant={'outline'}>No variables filled</Badge>
+        } else {
+          node = (
+            <div className="space-y-1">
+              {variableEntries.slice(0, 3).map(([key, val], index) => (
+                <div key={index} className="text-xs">
+                  <span className="font-medium">{key}:</span> {val as string}
+                </div>
+              ))}
+              {variableEntries.length > 3 && (
+                <Badge variant="outline" className="text-xs">
+                  +{variableEntries.length - 3} more
+                </Badge>
+              )}
+            </div>
+          )
+        }
+      } catch {
+        node = <Badge variant={'outline'}>Invalid response</Badge>
+      }
       break;
   }
 
